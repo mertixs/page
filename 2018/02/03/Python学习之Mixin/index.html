@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="byken的博客 byken 博客" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="写在前面 寒假在家准备写一个web版本的聊天软件，怎奈一直没有头绪，就花了时间去看django的源码，一直在别人代码里看到Mixin的字样，却不知道为什么这么写，心中的困惑总得不到消除，这次又看到了，所以索性到网上查了查，参考知乎上的解答。弄懂后记下。  概念 Mixin是一种特殊的多重继承，也就是多重继承的子集。使用Mixin的好处是，同时享有单一继承的单纯性和多重继承的共有性。 作为Mixin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python学习之Mixin">
+<meta property="og:url" content="https://byken.ml/2018/02/03/Python学习之Mixin/index.html">
+<meta property="og:site_name" content="byken">
+<meta property="og:description" content="写在前面 寒假在家准备写一个web版本的聊天软件，怎奈一直没有头绪，就花了时间去看django的源码，一直在别人代码里看到Mixin的字样，却不知道为什么这么写，心中的困惑总得不到消除，这次又看到了，所以索性到网上查了查，参考知乎上的解答。弄懂后记下。  概念 Mixin是一种特殊的多重继承，也就是多重继承的子集。使用Mixin的好处是，同时享有单一继承的单纯性和多重继承的共有性。 作为Mixin">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-03T17:07:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python学习之Mixin">
+<meta name="twitter:description" content="写在前面 寒假在家准备写一个web版本的聊天软件，怎奈一直没有头绪，就花了时间去看django的源码，一直在别人代码里看到Mixin的字样，却不知道为什么这么写，心中的困惑总得不到消除，这次又看到了，所以索性到网上查了查，参考知乎上的解答。弄懂后记下。  概念 Mixin是一种特殊的多重继承，也就是多重继承的子集。使用Mixin的好处是，同时享有单一继承的单纯性和多重继承的共有性。 作为Mixin">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://byken.ml/2018/02/03/Python学习之Mixin/"/>
+
+
+
+
+
+  <title>Python学习之Mixin | byken</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">byken</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">byken.ml</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-outlink">
+          <a href="/links/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-external-link"></i> <br />
+            
+            友情链接
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://byken.ml/2018/02/03/Python学习之Mixin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="byken">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="byken">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python学习之Mixin</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-03T18:27:37+08:00">
+                2018-02-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h1><blockquote>
+<p>寒假在家准备写一个web版本的聊天软件，怎奈一直没有头绪，就花了时间去看django的源码，一直在别人代码里看到Mixin的字样，却不知道为什么这么写，心中的困惑总得不到消除，这次又看到了，所以索性到网上查了查，参考<a href="https://www.zhihu.com/question/20778853" target="_blank" rel="noopener">知乎上的解答</a>。弄懂后记下。</p>
+</blockquote>
+<h1 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h1><blockquote>
+<p>Mixin是一种特殊的多重继承，也就是多重继承的子集。<br>使用Mixin的好处是，同时享有单一继承的单纯性和多重继承的共有性。</p>
+<p>作为Mixin类，需要满足以下条件：</p>
+<ol>
+<li>不能单独生成实例对象，属于抽象类。</li>
+<li>不能继承Mixin以外的类。</li>
+</ol>
+</blockquote>
+<h2 id="有以下特点"><a href="#有以下特点" class="headerlink" title="有以下特点"></a>有以下特点</h2><blockquote>
+<p><em>Mixin 类是单一职责的</em></p>
+<p><em>Mixin 类对宿主类（Post）一无所知（等价于 Java 中要求宿主类实现 Entity 接口）</em></p>
+<p><em>宿主类的主体逻辑不会因为去掉 Mixin 而受到影响，同时也不存在超类方法调用（super）以避免引入 MRO 查找顺序问题</em></p>
+</blockquote>
+<h1 id="自我见解"><a href="#自我见解" class="headerlink" title="自我见解"></a>自我见解</h1><blockquote>
+<p>​    通过我自己学的知识理解，也就是一种解耦合的过程，上层的方法提供者，也就是Mixin类提供了一系列可供子类调用的方法，而Mixin类不用知道调用它的子类是什么，比如threading.Thread类提供了一些线程操作的方法，而不用知道这些线程是用来完成什么事的，用socket.socket类配合可以实现多线程的socket通信。</p>
+<p>​    Java对于接口有单独的类型interface去支持定义接口。</p>
+<p>​    Python是支持多继承的语言，在学习C++的时候，我们就知道一件事情，如出现以下的情形，就麻烦了。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">A</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  	A()&#123;&#125;;</span><br><span class="line">  	~A()&#123;&#125;;</span><br><span class="line">  	<span class="function"><span class="keyword">void</span> <span class="title">func1</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"this is A"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span>:</span> <span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  	B()&#123;&#125;;</span><br><span class="line">  	~B()&#123;&#125;;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">func1</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"this is B"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">C</span>:</span> <span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  	C()&#123;&#125;;</span><br><span class="line">  	~C()&#123;&#125;;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">func1</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">"this is C"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>​    使用Mixin，由于Mixin只关心它自己需要实现哪些方法供子类调用，且子类不要重写Mixin类中的同名方法，所以不会出现多重继承的弊病，比如下面的代码。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Account</span><span class="params">(object)</span>:</span></span><br><span class="line">    _id = <span class="number">0</span></span><br><span class="line">    _total = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, _id, money)</span>:</span></span><br><span class="line">        self._id = _id</span><br><span class="line">        self._total = money</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">entery</span><span class="params">(self, money: int)</span>:</span></span><br><span class="line">        self._total += money</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">out</span><span class="params">(self, money: int)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self._total &gt;= money:</span><br><span class="line">            self._total -= money</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">"余额不足:&#123;&#125;"</span>.format(self._total))</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_id</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self._id</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"ID: &#123;&#125;\tTotal: &#123;&#125;"</span>.format(self._id, self._total)</span><br><span class="line"></span><br><span class="line">    __repr__ = __str__</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PaymentMixin</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">pay</span><span class="params">(cls, account_in: Account, account_out: Account, money: int)</span>:</span></span><br><span class="line">        <span class="string">"""accountA &lt;-&gt; accountB"""</span></span><br><span class="line">        account_in.entery(money)</span><br><span class="line">        account_out.out(money)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bank</span><span class="params">(Account, PaymentMixin)</span>:</span></span><br><span class="line">    id = <span class="keyword">None</span></span><br><span class="line">    account_list = list()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, id)</span>:</span></span><br><span class="line">        self.id = id</span><br><span class="line">        a = Account(<span class="string">'10001'</span>, <span class="number">1000</span>)</span><br><span class="line">        self.account_list.append(a)</span><br><span class="line">        b = Account(<span class="string">'10002'</span>, <span class="number">5000</span>)</span><br><span class="line">        self.account_list.append(b)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">has_account</span><span class="params">(self, _id)</span>:</span></span><br><span class="line">        has = <span class="keyword">False</span></span><br><span class="line">        <span class="keyword">for</span> account <span class="keyword">in</span> self.account_list:</span><br><span class="line">            <span class="keyword">if</span> account.get_id() == _id:</span><br><span class="line">                has = <span class="keyword">True</span></span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">return</span> has</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_account</span><span class="params">(self, _id)</span>:</span></span><br><span class="line">        account = <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">for</span> _account <span class="keyword">in</span> self.account_list:</span><br><span class="line">            <span class="keyword">if</span> _account.get_id() == _id:</span><br><span class="line">                account = _account</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">return</span> account</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    bank = Bank(<span class="string">'1000001'</span>)</span><br><span class="line">    id_a = <span class="string">'10001'</span></span><br><span class="line">    id_b = <span class="string">'10002'</span></span><br><span class="line">    account_in = bank.get_account(id_a)</span><br><span class="line">    account_out = bank.get_account(id_b)</span><br><span class="line">    <span class="keyword">if</span> account_in <span class="keyword">and</span> account_out:</span><br><span class="line">        bank.pay(account_in, account_out, <span class="number">100</span>)</span><br><span class="line">        print(account_in)</span><br><span class="line">        print(account_out)</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><blockquote>
+<p>​    在上面的代码中PaymentMixin只用知道它是一个负责交易转账的类，实现了pay方法，也只关心它操作的两个账户对象，而不用知道使用它的是银行实体还是其他。</p>
+<p>​    这样设计的好处在于，即使不是转账不是由银行去使用，用于其他场景，也能运行的通，因为交易还是在账户和账户之间的，而不用关心到底调用的是商家还是银行，或许这和去年的一个比较流行的词汇有点像，“赋能”，这样做出一些Entity和Mixin，相互组合就可以完成不同场景的功能。</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/07/python函数使用技巧/" rel="next" title="python函数使用技巧">
+                <i class="fa fa-chevron-left"></i> python函数使用技巧
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/03/python学习之ctypes模块/" rel="prev" title="python学习之ctypes模块">
+                python学习之ctypes模块 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/uploads/avatar.png"
+                alt="byken" />
+            
+              <p class="site-author-name" itemprop="name">byken</p>
+              <p class="site-description motion-element" itemprop="description">byken的博客, 写写平时学的新东西时遇到的问题和解决办法, 有时是自己想的，有时是网上找的, 方便以后查找, 以及方便别人</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#写在前面"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#概念"><span class="nav-number">2.</span> <span class="nav-text">概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#有以下特点"><span class="nav-number">2.1.</span> <span class="nav-text">有以下特点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#自我见解"><span class="nav-number">3.</span> <span class="nav-text">自我见解</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">byken</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
