@@ -322,7 +322,7 @@
 <p>创建新的分支<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch newbranch</span><br></pre></td></tr></table></figure></p>
 </blockquote>
 <blockquote>
-<p>一般这么用:<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b new_branch</span><br><span class="line"><span class="meta">#</span><span class="bash">即创建新的分支并切换到新的分支</span></span><br></pre></td></tr></table></figure></p>
+<p>一般这么用:<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b new_branch</span><br><span class="line"><span class="meta">#</span>即创建新的分支并切换到新的分支</span><br></pre></td></tr></table></figure></p>
 </blockquote>
 <blockquote>
 <p>查看分支<br><code>git branch</code></p>
@@ -331,7 +331,7 @@
 <p>删除分支<br><code>git branch -d branchname</code><br>==没合并的分区应该用:<code>git branch -D branchname</code></p>
 </blockquote>
 <blockquote>
-<p>合并分区到master<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout master</span><br><span class="line">git merge branchname    #以fast-forward方式合并</span><br><span class="line">git merge --no-ff m "message you want to leave" branchname</span><br><span class="line"><span class="meta">#</span><span class="bash"> 关闭fast-forward提交，不会丢失原有分支的消息</span></span><br></pre></td></tr></table></figure></p>
+<p>合并分区到master<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout master</span><br><span class="line">git merge branchname    #以fast-forward方式合并</span><br><span class="line">git merge --no-ff m "message you want to leave" branchname</span><br><span class="line"><span class="meta">#</span> 关闭fast-forward提交，不会丢失原有分支的消息</span><br></pre></td></tr></table></figure></p>
 </blockquote>
 <blockquote>
 <p>查看分支图<br> <code>git log --graph</code></p>
