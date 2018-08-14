@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next muse use-motion" lang="zh-Hans">
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -114,7 +114,7 @@
 <meta property="og:url" content="https://byken.ml/index.html">
 <meta property="og:site_name" content="byken">
 <meta property="og:description" content="byken的博客">
-<meta property="og:locale" content="zh-Hans">
+<meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="byken">
 <meta name="twitter:description" content="byken的博客">
@@ -174,7 +174,7 @@
 
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
 
   
   
@@ -205,7 +205,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Toggle navigation bar">
+    <button aria-label="切换导航栏">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -225,7 +225,7 @@
           
           <li class="menu-item menu-item-home menu-item-active">
     <a href="/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
   </li>
         
         
@@ -233,7 +233,7 @@
           
           <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
   </li>
         
         
@@ -241,7 +241,7 @@
           
           <li class="menu-item menu-item-outlink">
     <a href="/links/" rel="section">
-      <i class="menu-item-icon fa fa-fw fa-external-link"></i> <br />outlink</a>
+      <i class="menu-item-icon fa fa-fw fa-external-link"></i> <br />友情链接</a>
   </li>
 
       
@@ -331,14 +331,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2018-02-03 19:01:31" itemprop="dateCreated datePublished" datetime="2018-02-03T19:01:31+08:00">2018-02-03</time>
+              <time title="创建时间：2018-02-03 19:01:31" itemprop="dateCreated datePublished" datetime="2018-02-03T19:01:31+08:00">2018-02-03</time>
             
 
             
@@ -353,9 +353,9 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Edited on</span>
+                  <span class="post-meta-item-text">更新于</span>
                 
-                <time title="Modified: 2018-02-28 16:36:23" itemprop="dateModified" datetime="2018-02-28T16:36:23+08:00">2018-02-28</time>
+                <time title="修改时间：2018-08-14 10:38:41" itemprop="dateModified" datetime="2018-08-14T10:38:41+08:00">2018-08-14</time>
               
             
           </span>
@@ -394,21 +394,20 @@
 <p>ctypes是python提供的一个外部库，用来方便的兼容C语言的数据类型，可以很方便的调用C语言写的dll(动态运行库)。</p>
 <p>附: <a href="https://docs.python.org/3.6/library/ctypes.html" target="_blank" rel="noopener">官方的英文文档</a></p>
 </blockquote>
-<h1 id="调用标准库和自定义动态库"><a href="#调用标准库和自定义动态库" class="headerlink" title="调用标准库和自定义动态库"></a>调用标准库和自定义动态库</h1><h3 id="废话不多说，先看例子"><a href="#废话不多说，先看例子" class="headerlink" title="废话不多说，先看例子"></a>废话不多说，先看例子</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* file: lib_a.c</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i, j;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;= <span class="number">9</span>; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span>(j = <span class="number">1</span>; j &lt;= i; ++j)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d x %d = %d\t"</span>, i, j, i*j);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="调用标准库和自定义动态库"><a href="#调用标准库和自定义动态库" class="headerlink" title="调用标准库和自定义动态库"></a>调用标准库和自定义动态库</h1><h2 id="废话不多说，先看例子"><a href="#废话不多说，先看例子" class="headerlink" title="废话不多说，先看例子"></a>废话不多说，先看例子</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">* file: lib_a.c</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"stdio.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">test</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i, j;</span><br><span class="line">	<span class="keyword">for</span> (i = <span class="number">1</span>; i &lt;= <span class="number">9</span>; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">for</span>(j = <span class="number">1</span>; j &lt;= i; ++j)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d x %d = %d\t"</span>, i, j, i*j);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc -c lib_a.c</span><br><span class="line">gcc -o lib_a.so lib_a.o -shared -fPIC</span><br><span class="line"><span class="meta">#</span> -shared 选项: 生成共享代码库的选项,如果源代码只有一个个的函数块而没有main函数不加会报错，有main函数时不加也不行，这样编译的意义不同。</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>-fPIC选项: 生成的动态代码库与位置无关。更多查看<a href="http://blog.csdn.net/sinc00/article/details/44833839" target="_blank" rel="noopener">这里</a></p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">file: test.py</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#import modules</span></span><br><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> cdll</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">  so_lib = cdll.LoadLibrary(<span class="string">'lib_a.so'</span>)	<span class="comment">#类似Java静态工厂方法的写法</span></span><br><span class="line">  <span class="string">"""</span></span><br><span class="line"><span class="string">  	#还可以这么写,直接生成对象</span></span><br><span class="line"><span class="string">  	so_lib = CDLL('lib_a.so')</span></span><br><span class="line"><span class="string">  """</span></span><br><span class="line">  so_lib.test()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">  main()</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>​    上述例子中，python调用C语言写的代码是通过先将C语言代码编译成为DLL(windows下后缀为.dll，Linux及Mac下没有具体结尾，与普通程序区别，以“.so”结尾)</p>
-<p>​    获取到CDLL对象后，即可像普通函数一样去调用。</p>
+<p>上述例子中，python调用C语言写的代码是通过先将C语言代码编译成为DLL(windows下后缀为.dll，Linux及Mac下没有具体结尾，与普通程序区别，以“.so”结尾)</p>
+<p>获取到CDLL对象后，即可像普通函数一样去调用。</p>
 </blockquote>
-<p>#数据类型的处理</p>
-<h3 id="一-基本数据类型"><a href="#一-基本数据类型" class="headerlink" title="一. 基本数据类型"></a>一. 基本数据类型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ctypes_int = c_int(<span class="number">0</span>)</span><br><span class="line">ctypes_char = c_char(<span class="string">b'a'</span>)</span><br><span class="line">ctypes_wchar = c_wchar(<span class="string">'你'</span>)</span><br><span class="line">ctypes_wchar_p = c_wchar_p(<span class="string">"Hello World"</span>)</span><br></pre></td></tr></table></figure>
-<h3 id="二-内存可变块操作"><a href="#二-内存可变块操作" class="headerlink" title="二. 内存可变块操作"></a>二. 内存可变块操作</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">s = create_string_buffer(<span class="number">15</span>)</span><br><span class="line">s = create_string_buffer(<span class="string">b"Hello"</span>)	<span class="comment">#会在原字符缓冲区结尾加空字符表示字符串结尾</span></span><br><span class="line">s = create_string_buffer(<span class="string">b"Hello"</span>, <span class="number">15</span>)	<span class="comment">#未被使用的区域全部初始化为b'\x00'</span></span><br><span class="line">s.value = <span class="string">b'Hello World'</span></span><br></pre></td></tr></table></figure>
-<h3 id="三-数组"><a href="#三-数组" class="headerlink" title="三. 数组"></a>三. 数组</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ctypes_int = c_int * <span class="number">10</span>		<span class="comment">#__main__.c_int_Array_10</span></span><br><span class="line">a = ctypes_int(<span class="number">1</span>，<span class="number">2</span>，<span class="number">3</span>，<span class="number">4</span>，<span class="number">5</span>，<span class="number">6</span>，<span class="number">7</span>，<span class="number">8</span>，<span class="number">9</span>，<span class="number">10</span>)</span><br><span class="line">&gt;&gt;&gt;a[<span class="number">0</span>]</span><br><span class="line">&gt;&gt;&gt;<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<h3 id="四-指针"><a href="#四-指针" class="headerlink" title="四. 指针"></a>四. 指针</h3><blockquote>
+<h1 id="数据类型的处理"><a href="#数据类型的处理" class="headerlink" title="数据类型的处理"></a>数据类型的处理</h1><h2 id="一-基本数据类型"><a href="#一-基本数据类型" class="headerlink" title="一. 基本数据类型"></a>一. 基本数据类型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ctypes_int = c_int(<span class="number">0</span>)</span><br><span class="line">ctypes_char = c_char(<span class="string">b'a'</span>)</span><br><span class="line">ctypes_wchar = c_wchar(<span class="string">'你'</span>)</span><br><span class="line">ctypes_wchar_p = c_wchar_p(<span class="string">"Hello World"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="二-内存可变块操作"><a href="#二-内存可变块操作" class="headerlink" title="二. 内存可变块操作"></a>二. 内存可变块操作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">s = create_string_buffer(<span class="number">15</span>)</span><br><span class="line">s = create_string_buffer(<span class="string">b"Hello"</span>)	<span class="comment">#会在原字符缓冲区结尾加空字符表示字符串结尾</span></span><br><span class="line">s = create_string_buffer(<span class="string">b"Hello"</span>, <span class="number">15</span>)	<span class="comment">#未被使用的区域全部初始化为b'\x00'</span></span><br><span class="line">s.value = <span class="string">b'Hello World'</span></span><br></pre></td></tr></table></figure>
+<h2 id="三-数组"><a href="#三-数组" class="headerlink" title="三. 数组"></a>三. 数组</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ctypes_int = c_int * <span class="number">10</span>		<span class="comment">#__main__.c_int_Array_10</span></span><br><span class="line">a = ctypes_int(<span class="number">1</span>，<span class="number">2</span>，<span class="number">3</span>，<span class="number">4</span>，<span class="number">5</span>，<span class="number">6</span>，<span class="number">7</span>，<span class="number">8</span>，<span class="number">9</span>，<span class="number">10</span>)</span><br><span class="line">&gt;&gt;&gt;a[<span class="number">0</span>]</span><br><span class="line">&gt;&gt;&gt;<span class="number">1</span></span><br></pre></td></tr></table></figure>
+<h2 id="四-指针"><a href="#四-指针" class="headerlink" title="四. 指针"></a>四. 指针</h2><blockquote>
 <p>pointer是ctypes模块提供的一个方法，可以生成一个指针对象实例(Python)</p>
 <p>而POINTER也是一个方法，它的作用是根据传入的类型，制造出新的，你自己定义的数据类型。</p>
 <p>自定义的指针类型创建对象需要传入c_type基本类型作为参数，否则会报错。</p>
@@ -424,7 +423,7 @@
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Bar</span><span class="params">(Structure)</span>:</span></span><br><span class="line"><span class="meta">... </span>    _fields_ = [(<span class="string">"count"</span>, c_int), (<span class="string">"values"</span>, POINTER(c_int))]</span><br><span class="line">...</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bar = Bar()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bar.values = (c_int * <span class="number">3</span>)(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>bar.count = <span class="number">3</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> i <span class="keyword">in</span> range(bar.count):</span><br><span class="line"><span class="meta">... </span>    print(bar.values[i])</span><br><span class="line">...</span><br><span class="line"><span class="number">1</span></span><br><span class="line"><span class="number">2</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line">&gt;&gt;&gt;bar.values = <span class="keyword">None</span>	<span class="comment">#指针赋值为空</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>bar.values = (c_byte * <span class="number">4</span>)()</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">TypeError: incompatible types, c_byte_Array_4 instance instead of LP_c_long instance</span><br><span class="line">&gt;&gt;&gt;</span><br><span class="line"><span class="comment">#使用cast方法进行类型转化</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = (c_byte * <span class="number">4</span>)()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>cast(a, POINTER(c_int))</span><br><span class="line">&lt;ctypes.LP_c_long object at ...&gt;</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
-<h3 id="五-结构体"><a href="#五-结构体" class="headerlink" title="五. 结构体"></a>五. 结构体</h3><blockquote>
+<h2 id="五-结构体"><a href="#五-结构体" class="headerlink" title="五. 结构体"></a>五. 结构体</h2><blockquote>
 <p>示例一. 普通结构体</p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 结构体测试</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span><span class="params">(Structure)</span>:</span></span><br><span class="line">    _fields_ = [</span><br><span class="line">        (<span class="string">'id'</span>, c_char * <span class="number">10</span>),</span><br><span class="line">        (<span class="string">'name'</span>, c_wchar_p),</span><br><span class="line">        (<span class="string">'sex'</span>, c_wchar),</span><br><span class="line">        (<span class="string">'age'</span>, c_int),</span><br><span class="line">    ]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    student_a = Student()</span><br><span class="line">    s_id = input(<span class="string">"Input ID: "</span>)</span><br><span class="line">    s_name = input(<span class="string">"Input Name: "</span>)</span><br><span class="line">    s_sex = input(<span class="string">"Input Sex: "</span>)</span><br><span class="line">    s_age = int(input(<span class="string">"Input Age: "</span>))</span><br><span class="line">    student_a.id = bytes(s_id, <span class="string">'ascii'</span>)</span><br><span class="line">    student_a.name = c_wchar_p(s_name)</span><br><span class="line">    student_a.sex = c_wchar(s_sex)</span><br><span class="line">    student_a.age = c_int(s_age)</span><br><span class="line">    print(student_a.id)</span><br><span class="line">    print(student_a.name)</span><br><span class="line">    print(student_a.sex)</span><br><span class="line">    print(student_a.age)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
@@ -538,7 +537,7 @@
 </tr>
 </tbody>
 </table>
-<h1 id="未完待续。。。"><a href="#未完待续。。。" class="headerlink" title="未完待续。。。"></a>未完待续。。。</h1>
+
           
         
       
@@ -630,14 +629,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2018-02-03 18:27:37" itemprop="dateCreated datePublished" datetime="2018-02-03T18:27:37+08:00">2018-02-03</time>
+              <time title="创建时间：2018-02-03 18:27:37" itemprop="dateCreated datePublished" datetime="2018-02-03T18:27:37+08:00">2018-02-03</time>
             
 
             
@@ -652,9 +651,9 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Edited on</span>
+                  <span class="post-meta-item-text">更新于</span>
                 
-                <time title="Modified: 2018-02-04 01:07:58" itemprop="dateModified" datetime="2018-02-04T01:07:58+08:00">2018-02-04</time>
+                <time title="修改时间：2018-02-04 01:07:58" itemprop="dateModified" datetime="2018-02-04T01:07:58+08:00">2018-02-04</time>
               
             
           </span>
@@ -811,14 +810,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2017-11-07 00:35:50" itemprop="dateCreated datePublished" datetime="2017-11-07T00:35:50+08:00">2017-11-07</time>
+              <time title="创建时间：2017-11-07 00:35:50" itemprop="dateCreated datePublished" datetime="2017-11-07T00:35:50+08:00">2017-11-07</time>
             
 
             
@@ -833,9 +832,9 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Edited on</span>
+                  <span class="post-meta-item-text">更新于</span>
                 
-                <time title="Modified: 2018-03-01 17:48:28" itemprop="dateModified" datetime="2018-03-01T17:48:28+08:00">2018-03-01</time>
+                <time title="修改时间：2018-03-01 17:48:28" itemprop="dateModified" datetime="2018-03-01T17:48:28+08:00">2018-03-01</time>
               
             
           </span>
@@ -1038,14 +1037,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2017-09-24 23:35:09" itemprop="dateCreated datePublished" datetime="2017-09-24T23:35:09+08:00">2017-09-24</time>
+              <time title="创建时间：2017-09-24 23:35:09" itemprop="dateCreated datePublished" datetime="2017-09-24T23:35:09+08:00">2017-09-24</time>
             
 
             
@@ -1060,9 +1059,9 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Edited on</span>
+                  <span class="post-meta-item-text">更新于</span>
                 
-                <time title="Modified: 2018-03-01 17:17:36" itemprop="dateModified" datetime="2018-03-01T17:17:36+08:00">2018-03-01</time>
+                <time title="修改时间：2018-03-01 17:17:36" itemprop="dateModified" datetime="2018-03-01T17:17:36+08:00">2018-03-01</time>
               
             
           </span>
@@ -1216,14 +1215,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">发表于</span>
               
 
               
                 
               
 
-              <time title="Created: 2017-09-24 23:24:51" itemprop="dateCreated datePublished" datetime="2017-09-24T23:24:51+08:00">2017-09-24</time>
+              <time title="创建时间：2017-09-24 23:24:51" itemprop="dateCreated datePublished" datetime="2017-09-24T23:24:51+08:00">2017-09-24</time>
             
 
             
@@ -1238,9 +1237,9 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Edited on</span>
+                  <span class="post-meta-item-text">更新于</span>
                 
-                <time title="Modified: 2018-02-28 16:16:40" itemprop="dateModified" datetime="2018-02-28T16:16:40+08:00">2018-02-28</time>
+                <time title="修改时间：2018-02-28 16:16:40" itemprop="dateModified" datetime="2018-02-28T16:16:40+08:00">2018-02-28</time>
               
             
           </span>
@@ -1364,7 +1363,7 @@
                   <a href="/archives/">
                 
                     <span class="site-state-item-count">5</span>
-                    <span class="site-state-item-name">posts</span>
+                    <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
               
@@ -1421,7 +1420,7 @@
 
 
 
-  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
 
 
 
@@ -1429,7 +1428,7 @@
 
 
 
-  <div class="theme-info">Theme – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.0</div>
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.0</div>
 
 
 
