@@ -292,6 +292,580 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://byken.ml/2019/05/13/记安装 unit 时引出的 python 安装问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="byken">
+      <meta itemprop="description" content="byken的博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="byken">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/05/13/记安装 unit 时引出的 python 安装问题/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-13 19:06:14" itemprop="dateCreated datePublished" datetime="2019-05-13T19:06:14+08:00">2019-05-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-16 20:44:40" itemprop="dateModified" datetime="2018-11-16T20:44:40+08:00">2018-11-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="记安装-unit-时引出的-python-安装问题"><a href="#记安装-unit-时引出的-python-安装问题" class="headerlink" title="记安装 unit 时引出的 python 安装问题"></a>记安装 <em>unit</em> 时引出的 <em>python</em> 安装问题</h1><blockquote>
+<p>2018 年 11 月 16 日，在 nginx官网查看到 unit 服务器项目，想在自己的腾讯云主机上尝试安装。并配合unit-python使用</p>
+<p>nginx/unit版本：1.6    python版本：Cpython 3.7.1</p>
+</blockquote>
+<h2 id="安装时遇到的问题"><a href="#安装时遇到的问题" class="headerlink" title="安装时遇到的问题"></a>安装时遇到的问题</h2><ol>
+<li><p>初期试错</p>
+<blockquote>
+<p>安装时遇到的问题在现在的主机不能重现，也就大致说一下。也就是提式动态库编译失败，建议添加<code>-fPIC</code>重新编译，我以为是现有的<code>unit</code>的 Makefile 没有添加这个编译选项，<code>configure</code>生成的 Makefile 也确实没有这个选项，然后我就添加了 <code>python3:LDFLAGS += -fPIC -shared</code>的选项以及后面干脆在全局添加 <code>LDFLAGS= += fPIC -shared</code>,结果还是不行，后来在网上查找解决办法发现，这个指的是原有动态库在编译时没有开启共享的选项，与正在编译的软件无关，也就是这里其实是Python3编译参数有关。</p>
+</blockquote>
+</li>
+<li><p>继续尝试</p>
+<blockquote>
+<p>重新 Python3 的 源码</p>
+<ol>
+<li>Python3 centos下的依赖</li>
+</ol>
+<p>zlib zlib-devel bzip2 bzip2-devel ncurses ncurses-devel readline readline-devel openssl openssl-devel openssl-static xz lzma xz-devel sqlite sqlite-devel gdbm gdbm-devel tk tk-devel <em>libffi-devel</em></p>
+<p>（libffi-devel是3.7开始新增的依赖）</p>
+<ol start="2">
+<li>官网下载 Python3 的最新源码解压并进入解压的文件夹（安装autotools工具集和gcc编译器）</li>
+<li>编译安装</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> ./configure --prefix=/usr/local/python3 --enable-shared CFLAGS="-fPIC"</span><br><span class="line"><span class="meta">&gt;</span> make</span><br><span class="line"><span class="meta">&gt;</span> make install</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ol start="4">
+<li>配置PATH环境变量(~/.bashrc 或者~/.zshrc)。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> PATH=$PATH:/usr/local/python3/bin</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>安装后就遇到其他问题，这时发现 Python3 解释器运行不了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> # python3</span><br><span class="line"><span class="meta">&gt;</span> /usr/local/python3/bin/python3.7: error while loading shared libraries: libpython3.7m.so.1.0: cannot open shared object file: No such file or directory</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+</li>
+<li><p><strong>解决办法</strong></p>
+<blockquote>
+<p>在 StockOverflow 上查到的解释大致是 Python3 在源码安装时虽然通过 <code>-shared -fPIC</code> 选项开启了共享库的选项，但因为安装在<code>/usr/local/python3</code>，没有指定共享库的真实路径，所以 Python 的执行文件无法找到这个共享库。</p>
+<p>文中给出的解决办法是在PATH变量中添加：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> LD_RUN_PATH=`你的python3的lib地址` # 比如 /usr/local/python3/lib</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>还有一种就是在安装时指定<code>rpath</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> ./configure ... --enable-shared CFLAGS="-fPIC" LDFLAGS="-Wl,-rpath=/usr/local/python3/lib"</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>这个时候再编译 unit，就编译通过了。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ol>
+<li><p><a href="https://stackoverflow.com/questions/37757314/problems-installing-python-3-with-enable-shared" target="_blank" rel="noopener">Problems installing Python 3 with –enable-shared</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/ibingow/article/details/7882098" target="_blank" rel="noopener">rpath添加依赖库搜索路径</a></p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://byken.ml/2018/10/01/斐波拉契数引发的缓存优化问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="byken">
+      <meta itemprop="description" content="byken的博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="byken">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/10/01/斐波拉契数引发的缓存优化问题/" itemprop="url">
+                  斐波拉契数引发的缓存优化问题
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-10-01 23:06:40" itemprop="dateCreated datePublished" datetime="2018-10-01T23:06:40+08:00">2018-10-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-02 01:17:30" itemprop="dateModified" datetime="2018-10-02T01:17:30+08:00">2018-10-02</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h1><p>​    首先说说为什么写这篇文章，起因是在知乎上看到一篇关于一个面试者面试被面试官问到怎么去求斐波拉契数，继而问道怎么去优化求解过程，最后又被问到，如果服务器的空间有限，该怎么去优化这个过程，这其实和大学学的操作系统课程有点搭边了，可以用LRU去优化求解这个过程。</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><blockquote>
+<p>什么是斐波拉契数列？</p>
+</blockquote>
+<p><code>fib(n) = fib(n-1) + fib(n-2)</code></p>
+<p>满足当前项为前两项的和的数列，第一、二项都为 1 的数列</p>
+<blockquote>
+<p>可以怎么解决这个问题</p>
+</blockquote>
+<p>从上面的表达式出发，这个问题其实是一个递归求和的问题的，可以用递归迭代求出第 n 项的值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(value)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> value &lt;= <span class="number">2</span>:</span><br><span class="line">    	<span class="keyword">return</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">return</span> fib(value - <span class="number">1</span>) + fib(value - <span class="number">2</span>)</span><br></pre></td></tr></table></figure>
+<p>这样做足够简单，但从中也看出问题</p>
+<p>1、首先，我们看看为了解这样的问题我们需要做多少次运算</p>
+<blockquote>
+<p>如果 value = 5</p>
+<p>为了求 fib(5) 我们要求  fib(3) 和 fib(4)；</p>
+<p>fib(3) 又要求 fib(1) 和 fib(2)；</p>
+<p>fib(4) 要求 fib(2) 和 fib(3)； </p>
+<p>这时求 fib(3) 其实是进入 fib(4) 的递归调用后的运算，所以必须重复执行；</p>
+<p>所以这样做其实有很多重复的调用过程；</p>
+<p>我们假设每次的递归时间开销相同，为k，那么解决这个问题的开销是 <code>2^(n - 2)*k    (n &gt;=2)</code></p>
+</blockquote>
+<p>2、Python解释器也是有递归次数限制的(通过<code>sys.getrecursionlimit()查看</code>， 我的机器上查看的结果为<code>3000</code>,儿在实际测试中，程序到达992次递归就抛出异常了)，学过C语言我们应该知道，C 语言每次递归时都要保存当前的堆栈状态，这样每次开销其实很大。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(value)</span>:</span></span><br><span class="line">    <span class="comment"># 根据斐波拉契数列求解的表达式，我们求当前值只用知道求两个值</span></span><br><span class="line">    window = [<span class="number">0</span>, <span class="number">1</span>]</span><br><span class="line">    <span class="keyword">if</span> value &lt; <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(value - <span class="number">1</span>):</span><br><span class="line">        window[<span class="number">0</span>], window[<span class="number">1</span>] = window[<span class="number">1</span>], window[<span class="number">0</span>] + window[<span class="number">1</span>]</span><br><span class="line">    <span class="comment"># 返回 window 的第二个值</span></span><br><span class="line">    <span class="keyword">return</span> window[<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<p>改进后其实还是没那么理想，如果进行随机的多次计算，很有可能之前计算过值短时间又会遇到，这个时候如果程序还是老老实实的计算，这样效率也太低了。</p>
+<p>继续改进</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cache</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    	让原有 fib 函数支持简单缓存的装饰器</span></span><br><span class="line"><span class="string">    	简单的缓存处理，如果要计算的结果在 cache 中，则缓存命中，直接返回缓存的结果</span></span><br><span class="line"><span class="string">    	否则计算结果后将结果缓存并返回</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    caches = &#123;&#125;</span><br><span class="line"><span class="meta">    @wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(value)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> value <span class="keyword">not</span> <span class="keyword">in</span> caches:</span><br><span class="line">            caches[value] = func(value)</span><br><span class="line">        <span class="keyword">return</span> caches[value]</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure>
+<p>这时如果计算的值的的范围比较固定，比如只有 1~500 的斐波拉契数的计算，这个时候这个函数效率表现挺好的</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 测试代码</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">timeit</span><span class="params">(func)</span>:</span></span><br><span class="line"><span class="meta">    @wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        start = time.perf_counter()</span><br><span class="line">        func(*args, **kwargs)</span><br><span class="line">        end = time.perf_counter()</span><br><span class="line">        print(<span class="string">'Speed &#123;&#125; s.'</span>.format(end - start))</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="meta">@timeit</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_fib</span><span class="params">(func, datas)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> data <span class="keyword">in</span> datas:</span><br><span class="line">        func(data)</span><br><span class="line"></span><br><span class="line">fib_with_cache = cache(fib)</span><br><span class="line">datas = []</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">500000</span>):</span><br><span class="line">    datas.append(random.randint(<span class="number">1</span>, <span class="number">500</span>))</span><br><span class="line">test_fib(fib, datas)</span><br><span class="line">test_fib(fib_with_cache, datas)</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 测试结果</span><br><span class="line">Speed 18.067995723 s.</span><br><span class="line">Speed 0.13016686499999963 s.</span><br></pre></td></tr></table></figure>
+<p>​    如果我们这个时候遇到的不是求 斐波拉契数列的问题，结果范围很大，这个时候该怎么办呢，这个时候就引出我们要探讨的问题了, 我们需要在缓存结果很久未使用并且所设定的缓存空间满时将这些长时间没使用的数据清理掉。</p>
+<p>​    虽然长时间没使用的数据我们近期虽然不一定不会用，如果实际的应用场景并不适合用LRU去实现，可以考虑其他的实现方案。但始终记得的是，我们解决问题的方案要在较低的时间复杂度上去解决问题，不然，我们为了优化一类问题，却引入了另外一个拖慢运算的问题，这是得不偿失的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">A[lru_linked_list] --&gt;|next| B(4)</span><br><span class="line">B --&gt; |next|C(8)</span><br><span class="line">C(8) --&gt; |prev|B</span><br><span class="line">C --&gt; |next| D(9)</span><br><span class="line">D --&gt; |prev| C</span><br><span class="line">D --&gt; |next| E(9)</span><br><span class="line">E--&gt; |prev| D</span><br><span class="line">A[lru_linked_list] --&gt;|prev| E(4)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Node</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    	Node 节点，用于实现自定义的双向链表</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, prev, next, key)</span>:</span></span><br><span class="line">        self.prev, self.next, self.key = prev, next, key</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">LRU</span><span class="params">(func, lens=<span class="number">60</span>)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    	lens: 最大缓存数量</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    lens = lens</span><br><span class="line">    caches = &#123;&#125;</span><br><span class="line">    lru_linked_list = Node(<span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line"><span class="meta">    @wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(key)</span>:</span>   </span><br><span class="line">        <span class="keyword">nonlocal</span> lens</span><br><span class="line">        <span class="keyword">nonlocal</span> caches</span><br><span class="line">        <span class="keyword">nonlocal</span> lru_linked_list </span><br><span class="line">        <span class="comment"># 结果在缓存中</span></span><br><span class="line">        <span class="keyword">if</span> key <span class="keyword">in</span> caches:</span><br><span class="line">            curr = lru_linked_list.next</span><br><span class="line">            <span class="keyword">while</span> curr:</span><br><span class="line">                <span class="keyword">if</span> curr.key == key:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line">                curr = curr.next</span><br><span class="line">            <span class="comment"># 只有查找结果不是在链首找到的才需要重新排序</span></span><br><span class="line">            <span class="keyword">if</span> curr <span class="keyword">is</span> <span class="keyword">not</span> lru_linked_list.next:</span><br><span class="line">                curr.prev.next = curr.next </span><br><span class="line">                <span class="keyword">if</span> curr.next:</span><br><span class="line">                    <span class="comment"># 移除的节点不是尾节点</span></span><br><span class="line">                    curr.next.prev = curr.prev</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="comment"># 移除的是尾节点还需将 prev 指向当前节点的上一个节点</span></span><br><span class="line">                    lru_linked_list.prev = curr.prev</span><br><span class="line">                <span class="comment"># 在链首添加最近使用的缓存的 key</span></span><br><span class="line">                curr.next = lru_linked_list.next</span><br><span class="line">                lru_linked_list.next.prev = curr</span><br><span class="line">                curr.prev = <span class="keyword">None</span></span><br><span class="line">                lru_linked_list.next = curr</span><br><span class="line">            value = caches[key]</span><br><span class="line">        <span class="comment"># 结果不在缓存中</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> len(caches) &gt;= lens:</span><br><span class="line">                <span class="comment"># 缓存已满，移除最近最久未使用的节点（prev）</span></span><br><span class="line">                deleter =  lru_linked_list.prev </span><br><span class="line">                lru_linked_list.prev = deleter.prev </span><br><span class="line">                lru_linked_list.prev.next = <span class="keyword">None</span></span><br><span class="line">                <span class="keyword">del</span> caches[deleter.key]</span><br><span class="line">                <span class="keyword">del</span> deleter</span><br><span class="line">            value = func(key)</span><br><span class="line">            <span class="comment"># 将计算结果添加到链首</span></span><br><span class="line">            curr = Node(<span class="keyword">None</span>, lru_linked_list.next, key)</span><br><span class="line">            <span class="keyword">if</span> len(caches) == <span class="number">0</span>:</span><br><span class="line">                <span class="comment"># 当前添加的缓存是第一个时，为了避免 lru_linked_list.prev 不为空</span></span><br><span class="line">                <span class="comment"># 将 prev 指向自己</span></span><br><span class="line">                lru_linked_list.prev = curr</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 将原来的第一个元素的 prev 指向新的 第一个元素 </span></span><br><span class="line">                lru_linked_list.next.prev = curr </span><br><span class="line">            lru_linked_list.next = curr</span><br><span class="line">            caches[key] = value</span><br><span class="line">        <span class="keyword">return</span> value</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 不带缓存、缓存大小为60、缓存大小为300 的500000次 1~500 求斐波拉契数的速度测试</span><br><span class="line">Speed 18.079841561 s.</span><br><span class="line">Speed 16.440746117 s.</span><br><span class="line">Speed 11.256666150999997 s.</span><br></pre></td></tr></table></figure>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>​    除了自定义链表去容纳 LRU队列以外，还可以使用 <code>heapq</code>模块，因为堆的特点就是可以保持每次取出的结果是最小的，堆内存储的是 <code>(次数, key)</code> 组成的二元组，caches里存储 key、value键值对，用于判断存在性，命中后将次数加一，<code>heapq.heappop</code>操作一次。</p>
+<p>​    在 Python 中解决计算密集型任务还可以根据当前操作处理器的个数分配合理的进程数，将任务有效分配至多个进程上，进行完成。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://byken.ml/2018/09/07/C语言使用Python扩展/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="byken">
+      <meta itemprop="description" content="byken的博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="byken">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/07/C语言使用Python扩展/" itemprop="url">
+                  C语言使用Python扩展
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-07 15:30:47" itemprop="dateCreated datePublished" datetime="2018-09-07T15:30:47+08:00">2018-09-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-10-02 01:14:56" itemprop="dateModified" datetime="2018-10-02T01:14:56+08:00">2018-10-02</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>前言: </p>
+<p>之前学习了在Python里利用 ctypes 调用C语言写的库和函数，相关的工具包还有 <a href="https://riverbankcomputing.com/hg/sip" target="_blank" rel="noopener"><em>sip</em></a> 和 <a href="http://www.swig.org/tutorial.html" target="_blank" rel="noopener"><em>swig</em></a>，以及 <a href="http://cython.org/" target="_blank" rel="noopener"><em>Cython</em></a></p>
+</blockquote>
+<p>现在，如果我们有用Python去扩展C语言库的需求，那可以怎么做呢？</p>
+<p>首先，下面是一个Python实现的求斐波那契数列的函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!usr/bin/python3</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">	filename: sample.py</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fib</span><span class="params">(value)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> isinstance(value, int):</span><br><span class="line">        <span class="keyword">raise</span> ValueError(<span class="string">'value must be integer'</span>)</span><br><span class="line">    <span class="keyword">if</span> value == <span class="number">1</span>:</span><br><span class="line">        sets = [<span class="number">1</span>, ]</span><br><span class="line">    <span class="keyword">elif</span> value &gt; <span class="number">1</span>:</span><br><span class="line">        sets = [<span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">2</span>, value):</span><br><span class="line">            sets.append(sets[i<span class="number">-2</span>] + sets[i<span class="number">-1</span>])</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        sets = []</span><br><span class="line">    <span class="keyword">return</span> sets</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    print(fib(<span class="number">20</span>))</span><br></pre></td></tr></table></figure>
+<p>下面是对应的C语言代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">	filename: test.c</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;Python.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> * <span class="title">call_func</span><span class="params">(PyObject * func, <span class="keyword">int</span> value, <span class="keyword">int</span> * size)</span> </span>&#123;</span><br><span class="line">    PyObject * args;</span><br><span class="line">    PyObject * kwargs;</span><br><span class="line">    PyObject * result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> * retval, i, retsize;</span><br><span class="line"></span><br><span class="line">    PyGILState_STATE state = PyGILState_Ensure();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!PyCallable_Check(func)) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"call_func: expected a callable\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> fail;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Build arguments */</span></span><br><span class="line">    args = Py_BuildValue(<span class="string">"(i)"</span>, value);</span><br><span class="line">    kwargs = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Call the function */</span></span><br><span class="line">    result = PyObject_Call(func, args, kwargs);</span><br><span class="line">    Py_DECREF(args);</span><br><span class="line">    Py_XDECREF(kwargs);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (PyErr_Occurred()) &#123;</span><br><span class="line">        PyErr_Print();</span><br><span class="line">        <span class="keyword">goto</span> fail;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Verify the result is a list object */</span></span><br><span class="line">    <span class="keyword">if</span> (!PyList_Check(result)) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">"call_func: callable didn't return a float\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> fail;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Create the return value */</span></span><br><span class="line">    retsize = PyList_Size(result);</span><br><span class="line">    *size = retsize;</span><br><span class="line">    retval = (<span class="keyword">int</span> *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="keyword">int</span>) * retsize);</span><br><span class="line">    <span class="built_in">memset</span>(retval, <span class="string">'\0'</span>, <span class="keyword">sizeof</span>(<span class="keyword">int</span>) * retsize);</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;retsize; i++) &#123;</span><br><span class="line">        retval[i] = PyLong_AsLong(PyList_GetItem(result, i));</span><br><span class="line">    &#125;</span><br><span class="line">    Py_DECREF(result);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Restore previous GIL state and return */</span></span><br><span class="line">    PyGILState_Release(state);</span><br><span class="line">    <span class="keyword">return</span> retval;</span><br><span class="line"></span><br><span class="line">    fail:</span><br><span class="line">        Py_XDECREF(result);</span><br><span class="line">        PyGILState_Release(state);</span><br><span class="line">        <span class="built_in">abort</span>(); <span class="comment">// Change to something more appropriate</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* Definition of call_func() same as above */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Load a symbol from a module */</span></span><br><span class="line"><span class="function">PyObject *<span class="title">import_name</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> * modname, <span class="keyword">const</span> <span class="keyword">char</span> * symbol)</span> </span>&#123;</span><br><span class="line">    PyObject * u_name, * <span class="keyword">module</span>;</span><br><span class="line">    u_name = PyUnicode_FromString(modname);</span><br><span class="line">    <span class="keyword">module</span> = PyImport_Import(u_name);</span><br><span class="line">    Py_DECREF(u_name);</span><br><span class="line">    <span class="keyword">return</span> PyObject_GetAttrString(<span class="keyword">module</span>, symbol);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    PyObject * fib_func;</span><br><span class="line">    <span class="keyword">int</span> i, size;</span><br><span class="line">    <span class="keyword">double</span> x;</span><br><span class="line">    Py_Initialize();</span><br><span class="line">    <span class="comment">/* Get a reference to the sample.fib function*/</span></span><br><span class="line">    fib_func = import_name(<span class="string">"sample"</span>, <span class="string">"fib"</span>);</span><br><span class="line">    <span class="keyword">int</span> * a = call_func(fib_func, <span class="number">30</span>, &amp;size);</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">"%ld\t"</span>, a[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    Py_DECREF(fib_func);</span><br><span class="line">    Py_Finalize();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>代码编写的过程其实是对CPython扩展的调用</p>
+<blockquote>
+<p>比如我的CPython3.7环境安装在我的 Windows 主机的<code>C:\lang\Python3\</code>目录下</p>
+<p>在编译时确保 <code>gcc</code> 能找到 CPython 的头文件和调用的库文件(动态库或静态库)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span>gcc -IC:\lang\Python3\include -LC:\lang\Python3 -lpython37 test.c -o test</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p><strong>注意</strong></p>
+<blockquote>
+<p>当前所使用的 Python 版本与 当前平台的 C 语言编译器版本保持一致，比如使用的 <a href="http://www.mingw.org/" target="_blank" rel="noopener"><em>MinGW</em></a> 为</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> Thread model: posix</span><br><span class="line"><span class="meta">&gt;</span> gcc version 8.1.0 (x86_64-posix-seh-rev0, Built by MinGW-W64 project)</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>Python版本为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; Python <span class="number">3.7</span><span class="number">.0</span> (v3<span class="number">.7</span><span class="number">.0</span>:<span class="number">1</span>bf9cc5093, Jun <span class="number">27</span> <span class="number">2018</span>, <span class="number">04</span>:<span class="number">59</span>:<span class="number">51</span>) [MSC v<span class="number">.1914</span> <span class="number">64</span> bit (AMD64)] on win32</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://byken.ml/2018/08/23/参考腾讯云机器翻译API文档的翻译实现/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1510,7 +2084,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -1554,7 +2128,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

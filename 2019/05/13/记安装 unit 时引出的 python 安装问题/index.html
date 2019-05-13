@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.4.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.4.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.4.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.4.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.4.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="记安装 unit 时引出的 python 安装问题 2018 年 11 月 16 日，在 nginx官网查看到 unit 服务器项目，想在自己的腾讯云主机上尝试安装。并配合unit-python使用 nginx/unit版本：1.6    python版本：Cpython 3.7.1  安装时遇到的问题 初期试错  安装时遇到的问题在现在的主机不能重现，也就大致说一下。也就是提式动态库编译失败，建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="byken">
+<meta property="og:url" content="https://byken.ml/2019/05/13/记安装 unit 时引出的 python 安装问题/index.html">
+<meta property="og:site_name" content="byken">
+<meta property="og:description" content="记安装 unit 时引出的 python 安装问题 2018 年 11 月 16 日，在 nginx官网查看到 unit 服务器项目，想在自己的腾讯云主机上尝试安装。并配合unit-python使用 nginx/unit版本：1.6    python版本：Cpython 3.7.1  安装时遇到的问题 初期试错  安装时遇到的问题在现在的主机不能重现，也就大致说一下。也就是提式动态库编译失败，建">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-16T12:44:40.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="byken">
+<meta name="twitter:description" content="记安装 unit 时引出的 python 安装问题 2018 年 11 月 16 日，在 nginx官网查看到 unit 服务器项目，想在自己的腾讯云主机上尝试安装。并配合unit-python使用 nginx/unit版本：1.6    python版本：Cpython 3.7.1  安装时遇到的问题 初期试错  安装时遇到的问题在现在的主机不能重现，也就大致说一下。也就是提式动态库编译失败，建">
+
+
+
+
+
+
+  <link rel="canonical" href="https://byken.ml/2019/05/13/记安装 unit 时引出的 python 安装问题/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | byken</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">byken</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">byken.ml</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-outlink">
+    <a href="/links/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-external-link"></i> <br />友情链接</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://byken.ml/2019/05/13/记安装 unit 时引出的 python 安装问题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="byken">
+      <meta itemprop="description" content="byken的博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="byken">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-05-13 19:06:14" itemprop="dateCreated datePublished" datetime="2019-05-13T19:06:14+08:00">2019-05-13</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-16 20:44:40" itemprop="dateModified" datetime="2018-11-16T20:44:40+08:00">2018-11-16</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="记安装-unit-时引出的-python-安装问题"><a href="#记安装-unit-时引出的-python-安装问题" class="headerlink" title="记安装 unit 时引出的 python 安装问题"></a>记安装 <em>unit</em> 时引出的 <em>python</em> 安装问题</h1><blockquote>
+<p>2018 年 11 月 16 日，在 nginx官网查看到 unit 服务器项目，想在自己的腾讯云主机上尝试安装。并配合unit-python使用</p>
+<p>nginx/unit版本：1.6    python版本：Cpython 3.7.1</p>
+</blockquote>
+<h2 id="安装时遇到的问题"><a href="#安装时遇到的问题" class="headerlink" title="安装时遇到的问题"></a>安装时遇到的问题</h2><ol>
+<li><p>初期试错</p>
+<blockquote>
+<p>安装时遇到的问题在现在的主机不能重现，也就大致说一下。也就是提式动态库编译失败，建议添加<code>-fPIC</code>重新编译，我以为是现有的<code>unit</code>的 Makefile 没有添加这个编译选项，<code>configure</code>生成的 Makefile 也确实没有这个选项，然后我就添加了 <code>python3:LDFLAGS += -fPIC -shared</code>的选项以及后面干脆在全局添加 <code>LDFLAGS= += fPIC -shared</code>,结果还是不行，后来在网上查找解决办法发现，这个指的是原有动态库在编译时没有开启共享的选项，与正在编译的软件无关，也就是这里其实是Python3编译参数有关。</p>
+</blockquote>
+</li>
+<li><p>继续尝试</p>
+<blockquote>
+<p>重新 Python3 的 源码</p>
+<ol>
+<li>Python3 centos下的依赖</li>
+</ol>
+<p>zlib zlib-devel bzip2 bzip2-devel ncurses ncurses-devel readline readline-devel openssl openssl-devel openssl-static xz lzma xz-devel sqlite sqlite-devel gdbm gdbm-devel tk tk-devel <em>libffi-devel</em></p>
+<p>（libffi-devel是3.7开始新增的依赖）</p>
+<ol start="2">
+<li>官网下载 Python3 的最新源码解压并进入解压的文件夹（安装autotools工具集和gcc编译器）</li>
+<li>编译安装</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> ./configure --prefix=/usr/local/python3 --enable-shared CFLAGS="-fPIC"</span><br><span class="line"><span class="meta">&gt;</span> make</span><br><span class="line"><span class="meta">&gt;</span> make install</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<ol start="4">
+<li>配置PATH环境变量(~/.bashrc 或者~/.zshrc)。</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> PATH=$PATH:/usr/local/python3/bin</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>安装后就遇到其他问题，这时发现 Python3 解释器运行不了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> # python3</span><br><span class="line"><span class="meta">&gt;</span> /usr/local/python3/bin/python3.7: error while loading shared libraries: libpython3.7m.so.1.0: cannot open shared object file: No such file or directory</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+</blockquote>
+</li>
+<li><p><strong>解决办法</strong></p>
+<blockquote>
+<p>在 StockOverflow 上查到的解释大致是 Python3 在源码安装时虽然通过 <code>-shared -fPIC</code> 选项开启了共享库的选项，但因为安装在<code>/usr/local/python3</code>，没有指定共享库的真实路径，所以 Python 的执行文件无法找到这个共享库。</p>
+<p>文中给出的解决办法是在PATH变量中添加：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> LD_RUN_PATH=`你的python3的lib地址` # 比如 /usr/local/python3/lib</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>还有一种就是在安装时指定<code>rpath</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;</span> ./configure ... --enable-shared CFLAGS="-fPIC" LDFLAGS="-Wl,-rpath=/usr/local/python3/lib"</span><br><span class="line"><span class="meta">&gt;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>这个时候再编译 unit，就编译通过了。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ol>
+<li><p><a href="https://stackoverflow.com/questions/37757314/problems-installing-python-3-with-enable-shared" target="_blank" rel="noopener">Problems installing Python 3 with –enable-shared</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/ibingow/article/details/7882098" target="_blank" rel="noopener">rpath添加依赖库搜索路径</a></p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/01/斐波拉契数引发的缓存优化问题/" rel="next" title="斐波拉契数引发的缓存优化问题">
+                <i class="fa fa-chevron-left"></i> 斐波拉契数引发的缓存优化问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">byken</p>
+              <p class="site-description motion-element" itemprop="description">byken的博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#记安装-unit-时引出的-python-安装问题"><span class="nav-number">1.</span> <span class="nav-text">记安装 unit 时引出的 python 安装问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装时遇到的问题"><span class="nav-number">1.1.</span> <span class="nav-text">安装时遇到的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文档"><span class="nav-number">1.1.1.</span> <span class="nav-text">参考文档</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">byken</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Muse</a> v6.4.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.4.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.4.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.4.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.4.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.4.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
